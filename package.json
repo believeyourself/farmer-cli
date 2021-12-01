@@ -1,11 +1,12 @@
 {
   "name": "farmer-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "./build/bin/index.js",
   "scripts": {
     "prepare": "husky install",
-    "deploy": "tsc && npm publish"
+    "deploy": "tsc && npm publish",
+    "link": ""
   },
   "author": "FarmerLZJ",
   "license": "ISC",
@@ -14,9 +15,11 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
+    "cheerio": "^1.0.0-rc.10",
     "inquirer": "^8.2.0",
     "mem-fs": "^2.2.1",
     "mem-fs-editor": "^9.3.0",
+    "to-markdown": "^3.1.1",
     "uninstall": "^0.0.0",
     "yargs-parser": "^21.0.0"
   },
@@ -24,6 +27,8 @@
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
     "@types/node": "^16.11.10",
+    "@types/to-markdown": "^3.0.1",
+    "eslint": "^8.3.0",
     "farmer-cli": "^1.0.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.2"
