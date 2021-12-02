@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-01 09:55:57
  * @LastEditors: lzj
- * @LastEditTime: 2021-12-01 18:04:39
+ * @LastEditTime: 2021-12-02 13:13:47
  * @FilePath: \farmer-cli\src\spider\index.ts
  */
 import https = require("https");
@@ -24,9 +24,9 @@ const prefixUrl = (url:string) => {
 }
 
 const getAllHref = ($:cheerio.CheerioAPI)=>{
-  const aTags = $("a");
-  const aArr = Array.from(aTags);
-  return aArr.map((a:any)=>{
+  const tags = $("a");
+  const arr = Array.from(tags);
+  return arr.map((a:any)=>{
     return a.attribs.href;
   }).filter((url:string)=>{
     return url && url.match(/^(http(s?):\/\/)/);
@@ -53,10 +53,15 @@ const getUrl = (url:string,savePath:string)=>{
   }, (res: IncomingMessage) => {
 
     //处理重定向
-    if([302,301,307].includes(res.statusCode)){
+    if(res.statusCode >= 300 && res.statusCode <= 400){
       getUrl(prefixUrl(res.headers.location),savePath);
       return;
+    }else if(res.statusCode !== 200){
+      console.error(chalk.redBright("===================="));
+      console.error(chalk.redBright(`请求失败，code:${res.statusCode}[ ${url} ]`));
+      return;
     }
+    
 
     //记录处理过得路径
     usedPath.push(options.pathname);
@@ -69,20 +74,28 @@ const getUrl = (url:string,savePath:string)=>{
     res.on('end',async () => {
       //保存html文件
       let fileName = `${options.hostname}${options.pathname}${options.hash}`.replace(/(\/|\\)/g,"_");
-      let mdContent = toMarkdown(content)
       fs.writeFileSync(path.join(savePath,`${fileName}.html`),content.toString());
-      fs.writeFileSync(path.join(savePath,`${fileName}.md`),mdContent.toString());
+
+      //保存md文件
+      // let mdContent = toMarkdown(content);
+      // fs.writeFileSync(path.join(savePath,`${fileName}.md`),mdContent.toString());
       console.log(chalk.green(`${fileName}已保存到路径:${savePath}`));
 
       //当前页面中的url继续读取
       const $ = cheerio.load(content);
+      
       const tasks:any[] = [];
       getAllHref($).forEach((url:string)=>{
         tasks.push(new Promise(()=>{
           getUrl(prefixUrl(url),savePath);
         }))
-      })
-      await Promise.all(tasks);
+      });
+
+      //有任务则五秒后开启下一轮
+      if(tasks.length > 0){
+         await Promise.all(tasks);
+      }
+      
     });
   })
   //错误处理
@@ -95,9 +108,8 @@ const getUrl = (url:string,savePath:string)=>{
 
 module.exports = async (args:YArgs) => {
   let [url] = args._;
-
   //创建保存目录 
-  let saveDir = path.join(__dirname,`./${url}`);
+  let saveDir = path.join(process.cwd(),`./${url}`);
   if(!fs.existsSync(saveDir)){
     fs.mkdirSync(saveDir);  
   }
