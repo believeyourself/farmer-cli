@@ -19,13 +19,15 @@
     "inquirer": "^8.2.0",
     "mem-fs": "^2.2.1",
     "mem-fs-editor": "^9.3.0",
+    "mysql": "^2.18.1",
+    "mysql-await": "^2.1.8",
     "to-markdown": "^3.1.1",
-    "uninstall": "^0.0.0",
     "yargs-parser": "^21.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
+    "@types/mysql": "^2.15.19",
     "@types/node": "^16.11.10",
     "@types/to-markdown": "^3.0.1",
     "eslint": "^8.3.0",
