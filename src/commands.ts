@@ -10,9 +10,9 @@ import spider = require("./spider");
 
 const help = (code=0)=>{
     console.log(`Usage:
-    ${chalk.green("farmer help")} 帮助
-    ${chalk.green("farmer version")} 版本号
-    ${chalk.green("farmer spider [url]")} 爬取指定网址`);
+    ${chalk.green("spider help")} 帮助
+    ${chalk.green("spider version")} 版本号
+    ${chalk.green("spider spider [url]")} 爬取指定网址`);
     process.exit(code);
   }
 

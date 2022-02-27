@@ -1,12 +1,13 @@
 {
-  "name": "farmer-cli",
-  "version": "1.0.1",
-  "description": "",
+  "name": "farmer-site-cli",
+  "version": "1.0.5",
+  "description": "站长工具，爬取网站网页数据，命令行式操作，无需代码编写。",
+  "keywords": ["node","spider"],
   "main": "./build/bin/index.js",
   "scripts": {
     "prepare": "husky install",
     "deploy": "tsc && npm publish",
-    "link": ""
+    "test": "tsc && farmer spider www.batmanit.com --md"
   },
   "author": "FarmerLZJ",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "farmer": "./build/bin/index.js"
   },
   "dependencies": {
+    "axios": "^0.26.0",
     "chalk": "^4.1.2",
     "cheerio": "^1.0.0-rc.10",
     "inquirer": "^8.2.0",
