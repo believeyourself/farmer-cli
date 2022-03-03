@@ -18,7 +18,8 @@
 
   const options = {
     all:false,
-    md:false
+    md:false,
+    tag: "body"
   }
 
 
@@ -111,27 +112,33 @@
 
     //内容处理
     let content = res.data;
-    
-    let fileName = `${urlObj.hostname}${urlObj.pathname}${urlObj.hash}`.replace(/(\/|\\)/g,"_");
-    if(options.md){
-      //保存md文件
-      let mdContent = toMarkdown(content);
-      const finalFileName = fileName.includes(".md") ? fileName : `${fileName}.md`;
-      fs.writeFileSync(path.join(savePath,finalFileName),mdContent.toString());
-    }else{
-      //保存html文件
-      const finalFileName = fileName.includes(".html") ? fileName : `${fileName}.html`;
-      fs.writeFileSync(path.join(savePath, finalFileName),content.toString());
+    const $ = cheerio.load(content);
+    const artical = $(options.tag);
+
+    //不是内容页的页面不保存
+    if(artical){
+      let fileName = `${urlObj.hostname}${urlObj.pathname}${urlObj.hash}`.replace(/(\/|\\)/g,"_");
+      if(options.md){
+        //保存md文件
+        let mdContent = toMarkdown(artical.toString());
+        const finalFileName = fileName.includes(".md") ? fileName : `${fileName}.md`;
+        fs.writeFileSync(path.join(savePath,finalFileName),mdContent.toString());
+      }else{
+        //保存html文件
+        const finalFileName = fileName.includes(".html") ? fileName : `${fileName}.html`;
+        fs.writeFileSync(path.join(savePath, finalFileName),artical.toString());
+      }
     }
 
-
-    
-
+    // 获取页面中所有的URL
     if(options.all){
-      //返回字符串解析为 DOM
       const $ = cheerio.load(content);
       queue.push(...getAllHref($));
     }
+  }
+
+  const saveImage = () => {
+    
   }
 
   const start = async (url:string,saveDir:string)=>{
@@ -145,15 +152,30 @@
     console.log(chalk.green(`下载成功${total}个文件`))
   }
 
+  //生成下载目录
+  const genDirectory = () => {
+    //创建保存目录 
+    let saveDir = path.join(process.cwd(),`./${origin.hostname}`);
+    if(!fs.existsSync(saveDir)){
+      fs.mkdirSync(saveDir);  
+    }
+
+    // 创建图片保存路径
+    let imageDir = path.join(saveDir,`images`);
+    if(!fs.existsSync(imageDir)){
+      fs.mkdirSync(imageDir);  
+    }
+
+    return saveDir;
+  }
+
   module.exports = async (args:YArgs) => {
     const [url] = args._;
     options.all = args.all || false;
     options.md = args.md || false;
-    //创建保存目录 
-    let saveDir = path.join(process.cwd(),`./${url}`);
-    if(!fs.existsSync(saveDir)){
-      fs.mkdirSync(saveDir);  
-    }
+    options.tag = args.tag || "body";
     origin = new URL(prefixUrl(url));
-    start(prefixUrl(url),saveDir)
+
+    const saveDir = genDirectory();
+    start(prefixUrl(url), saveDir)
   }

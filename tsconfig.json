@@ -1,6 +1,6 @@
 {
   "include": ["bin","src","package.json"],
-  "exclude": ["node_modules","template","dist"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
       "declaration": true,
       "module": "commonjs",

@@ -26,4 +26,6 @@ farmer spider www.baidu.com
 
 --all：跟踪下载网页中同源的所有html文件
 
---md: 将请求到的html文件尝试转为md并下载(直接从html转md目前还有问题格式会乱，后续再更新)
+--md: 将请求到的html文件尝试转为md并下载(直接从html转md目前还有问题格式会乱，后续再更新)。
+
+--tag: 指定页面中的节点，只保存节点内容，支持css选择器语法选择。

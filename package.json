@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "husky install",
     "deploy": "tsc && npm publish",
-    "test": "tsc && farmer spider www.batmanit.com --md"
+    "test": "tsc && farmer spider https://www.caiens.com/900.html --md --tag=div.single-entry"
   },
   "author": "FarmerLZJ",
   "license": "ISC",
